@@ -2,7 +2,7 @@
 
 ### **Classes**: Customer, Computer, Session, and Cyber Cafe
 
-We need to use arrays to store data about customers, active session, comupters etc.
+We need to use arrays to store data about customers, active session, computers etc.
 
 ## Computer Class
 Make attributes like computer number, availability
