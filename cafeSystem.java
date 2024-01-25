@@ -191,7 +191,7 @@ class CyberCafe {
         boolean found = false;
         for (Computer computer : computers) {
             for (Session session : computer.sessions) {
-                if (session==null) {
+                if (session == null) {
                     continue;
                 }
                 String s = session.cust_name.toLowerCase();
