@@ -33,7 +33,11 @@ class Session {
         System.out.println("Customer: " + cust_name);
         System.out.println("Duration: " + duration);
         System.out.println("Session Started at: " + start.format(formatted_time));
-        System.out.println("Session ended at: " + end.format(formatted_time));
+        if (end != null) {
+            System.out.println("Session ended at: " + end.format(formatted_time));
+        } else {
+            System.out.println("Session still running");
+        }
     }
 
     void setName(String name) {
@@ -73,13 +77,9 @@ class Computer {
         curr_sess += 1;
     }
 
-    void printDetails() {
-        System.out.println("Status: " + status);
-        System.out.println("ID: " + id);
-    }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class CyberCafe {
     final int no_of_comps = 30;
     Computer[] computers = new Computer[30];
@@ -172,7 +172,9 @@ class CyberCafe {
             for (Session session : arr) {
                 if (session == null) {
                     continue;
-                } else {
+                }
+
+                else {
                     System.out.println("#############################");
                     System.out.println();
                     session.printSessInfo(pc_id);
@@ -201,13 +203,65 @@ class CyberCafe {
                     session.printSessInfo(computer.id);
                     System.out.println("#############################");
                     System.out.println();
-                } else {
+                }
+
+                else {
                     continue;
                 }
             }
         }
         if (!found) {
             System.out.println("No such Customer found.");
+        }
+    }
+
+    public void help() {
+        System.out.println("1. Start a new session.");
+        System.out.println("2. End a session.");
+        System.out.println("3. Show Available PCs");
+        System.out.println("4. Show Occupied PCs");
+        System.out.println("5. Display Usage History");
+        System.out.println("6. Search Usage for a specific customer");
+        System.out.println("7. Display index menu");
+        System.out.println("8. Exit");
+    }
+
+    public void run(Scanner inp) {
+        help();
+        makeComputerObjs();
+        while (true) {
+            System.out.print("Enter index: ");
+            int index = inp.nextInt();
+
+            switch (index) {
+                case 1:
+                    startUsing(inp);
+                    break;
+                case 2:
+                    endSession(inp);
+                    break;
+                case 3:
+                    showAvailablePCs();
+                    ;
+                    break;
+                case 4:
+                    showActivePCs();
+                    break;
+                case 5:
+                    computerHistory(inp);
+                    break;
+                case 6:
+                    searchCustomer(inp);
+                    break;
+                case 7:
+                    help();
+                case 8:
+                    inp.close();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Enter correct index");
+            }
         }
     }
 
@@ -218,23 +272,6 @@ public class cafeSystem {
         Scanner inp = new Scanner(System.in);
 
         CyberCafe cafe = new CyberCafe();
-        cafe.makeComputerObjs();
-
-        while (true) {
-            int x = inp.nextInt();
-            if (x == 1) {
-                cafe.showAvailablePCs();
-                cafe.showActivePCs();
-            } else if (x == 2) {
-                cafe.startUsing(inp);
-            } else if (x == 4) {
-                cafe.computerHistory(inp);
-            } else if (x == 5) {
-                cafe.searchCustomer(inp);
-            } else {
-                cafe.endSession(inp);
-            }
-        }
-
+        cafe.run(inp);
     }
 }
