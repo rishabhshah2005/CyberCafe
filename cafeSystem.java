@@ -7,22 +7,20 @@ class Session{
     static int sessionID;
     int id;
     long st, dur;
-    String status, duration, cust_name;
+    String duration, cust_name;
 
-    DateTimeFormatter formatted_time = DateTimeFormatter.ofPattern("DD/MM/YY | h:m:s a");
+    DateTimeFormatter formatted_time = DateTimeFormatter.ofPattern("DD/MM/YY | hh:mm:ss a");
 
     public void startSession(){
         start = LocalDateTime.now();
         st = System.currentTimeMillis();
         sessionID +=1;
         id = sessionID;
-        status = "active";
-        // System.out.println(start.format(formatted_time));
+        System.out.println("Session started at: "+start.format(formatted_time));
     }
 
     public void end_session(){
         end = LocalDateTime.now();
-        status="inactive";
         dur = System.currentTimeMillis()-st;
         long min = dur/(1000*60);
         long sec = (dur%(1000*60))/1000;
@@ -31,13 +29,17 @@ class Session{
     
     void printSessInfo(){
         System.out.println("ID: "+id);
+        System.out.println("Customer: "+cust_name);
         System.out.println("Duration: "+duration);
+        System.out.println("Session ended at: "+end.format(formatted_time));
     }
 
     void setName(String name){
-        cust_name = name;    }
+        cust_name = name;
+    }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class Computer{
     static int id_cnt;
     int id;
@@ -51,7 +53,7 @@ class Computer{
         id = id_cnt;
     }
 
-    void usePc(){
+    void usePc(String name){
         if (curr_sess>=20){
             System.out.println("No more sessions left");
         }
@@ -59,12 +61,14 @@ class Computer{
             status = "active";
             sessions[curr_sess] = new Session();
             sessions[curr_sess].startSession();
+            sessions[curr_sess].cust_name = name;
         }
     }
     
     void releasePc(){
         status = "inactive";
         sessions[curr_sess].end_session();
+        sessions[curr_sess].printSessInfo();
         curr_sess += 1;
     }
 
@@ -74,15 +78,106 @@ class Computer{
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class CyberCafe{
+    final int no_of_comps = 30;
+    Computer[] computers = new Computer[30];
+
+    void makeComputerObjs(){
+        for (int i=0; i < computers.length; i++) {
+            computers[i] = new Computer();
+        }
+    }
+
+    // Shows the PC id's of the PCs that have status set to Inactive
+    void showAvailablePCs(){
+        System.out.println("Following PCs are available");
+        System.out.print("| ");
+        for (Computer computer : computers) {
+            if(computer.status.equals("inactive")){
+                System.out.print(computer.id+" | ");
+            }
+        }
+        System.out.println();
+    }
+
+    void showActivePCs(){
+        System.out.println("Following PCs are in use");
+        System.out.print("| ");
+
+        for (Computer computer : computers) {
+            if(computer.status.equals("active")){
+                System.out.print(computer.id+" | ");
+            }
+        }
+        System.out.println();
+    }
+
+    void startUsing(Scanner inp){
+        String name;
+        inp.nextLine();
+        System.out.print("Enter Name: ");
+        name = inp.nextLine();
+        System.out.print("Enter the ID of the PC you want to use: ");
+        int pc_id = inp.nextInt();
+
+        if (pc_id>30) {
+            System.out.println("Computer doesnt exist! Try again");
+            startUsing(inp);
+        }
+
+        else if(computers[pc_id-1].status.equals("active")){
+            System.out.println("That PC is taken. Try again!");
+            startUsing(inp);
+        }
+
+        else{
+            computers[pc_id-1].usePc(name);
+        }
+    }
+
+    void endSession(Scanner inp){
+        System.out.print("Enter the ID of the PC you want to end session of: ");
+        int pc_id = inp.nextInt();
+
+        if (pc_id>30) {
+            System.out.println("Computer doesnt exist! Try again");
+            endSession(inp);
+        }
+
+        else if(computers[pc_id-1].status.equals("inactive")){
+            System.out.println("That PC has no session running currently");
+            endSession(inp);
+        }
+
+        else{
+            computers[pc_id-1].releasePc();
+        }
+
+    }
+
+}
+
 public class cafeSystem {
     public static void main(String[] args) {
         Scanner inp = new Scanner(System.in);
-        Computer pc = new Computer();
-        while (true){
-            pc.usePc();
-            inp.nextLine();
-            pc.releasePc();
-            pc.sessions[pc.curr_sess-1].printSessInfo();
+        
+        CyberCafe cafe = new CyberCafe();
+        cafe.makeComputerObjs();
+        
+        while (true) {
+            int x = inp.nextInt();
+            if (x==1) {
+                cafe.showAvailablePCs();
+                cafe.showActivePCs();
+            }
+            else if (x==2){
+                cafe.startUsing(inp);
+            }
+            else{
+                cafe.endSession(inp);
+            }
         }
+        
     }
 }
