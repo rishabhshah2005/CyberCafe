@@ -2,6 +2,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+// Session class: handles sessions 
 class Session {
     LocalDateTime start, end;
     static int sessionID;
@@ -11,6 +12,7 @@ class Session {
 
     DateTimeFormatter formatted_time = DateTimeFormatter.ofPattern("DD/MM/YY | hh:mm:ss a");
 
+    // this command will start a new session. It will note the start time and create a new seesion ID
     public void startSession() {
         start = LocalDateTime.now();
         st = System.currentTimeMillis();
@@ -19,6 +21,7 @@ class Session {
         System.out.println("Session started at: " + start.format(formatted_time));
     }
 
+    // This command will end the session, notes the ending time and calculates duration of session based on it
     public void end_session() {
         end = LocalDateTime.now();
         dur = System.currentTimeMillis() - st;
@@ -27,7 +30,8 @@ class Session {
         duration = min + " min " + sec + " seconds";
     }
 
-    void printSessInfo(int pc_id) {
+    // prints session information
+    public void printSessInfo(int pc_id) {
         System.out.println("Session ID: " + id);
         System.out.println("PC ID: " + pc_id);
         System.out.println("Customer: " + cust_name);
@@ -40,26 +44,33 @@ class Session {
         }
     }
 
-    void setName(String name) {
+    // just a simple function to se customer name
+    public void setName(String name) {
         cust_name = name;
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Computer Class
 class Computer {
     static int id_cnt;
     int id;
     int curr_sess;
     String status = "inactive";
 
+    // This class has a array "sessions" which stores the session info of that particular computer
     Session[] sessions = new Session[20];
 
-    Computer() {
+    // This constructor gives the each computer a unique ID using a static variable each time a computer object is created
+    public Computer() {
         id_cnt++;
         id = id_cnt;
     }
 
-    void usePc(String name) {
+    // This function starts a session on a computer, it takes the customer's name as a argument.
+    // It also adds a session object to the 'sessions' array and starts the session and marks the current computer as occupied
+    public void usePc(String name) {
         if (curr_sess >= 20) {
             System.out.println("No more sessions left");
         } else {
@@ -70,7 +81,8 @@ class Computer {
         }
     }
 
-    void releasePc() {
+    // This functions releases a PC. It marks it unactive and ends the current running session.
+    public void releasePc() {
         status = "inactive";
         sessions[curr_sess].end_session();
         System.out.println("Session ended for PC-" + id);
@@ -80,18 +92,23 @@ class Computer {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Cyber Cafe class: The main Cafe class
 class CyberCafe {
     final int no_of_comps = 30;
+
+    // This class has a array of 30 computers 
     Computer[] computers = new Computer[30];
 
-    void makeComputerObjs() {
+    // Just a function to create 30 computer objects in the array
+    public void makeComputerObjs() {
         for (int i = 0; i < computers.length; i++) {
             computers[i] = new Computer();
         }
     }
 
     // Shows the PC id's of the PCs that have status set to Inactive
-    void showAvailablePCs() {
+    public void showAvailablePCs() {
         System.out.println("Following PCs are available");
         System.out.print("| ");
         for (Computer computer : computers) {
@@ -102,7 +119,8 @@ class CyberCafe {
         System.out.println();
     }
 
-    void showActivePCs() {
+    // Shows the PC's that are Acive(currently being used)
+    public void showActivePCs() {
         System.out.println("Following PCs are in use");
         System.out.print("| ");
 
@@ -114,7 +132,8 @@ class CyberCafe {
         System.out.println();
     }
 
-    void startUsing(Scanner inp) {
+    // This function takes information about the PC a customer wants to use. And Starts a session on it
+    public void startUsing(Scanner inp) {
         String name;
         inp.nextLine();
         System.out.print("Enter Name: ");
@@ -137,7 +156,8 @@ class CyberCafe {
         }
     }
 
-    void endSession(Scanner inp) {
+    // Ends a session. It takes ID of the computer whose session we want to end
+    public void endSession(Scanner inp) {
         System.out.print("Enter the ID of the PC you want to end session of: ");
         int pc_id = inp.nextInt();
 
@@ -157,7 +177,8 @@ class CyberCafe {
 
     }
 
-    void computerHistory(Scanner inp) {
+    // Prints the session info/history of a particular PC. It takes the PC id.
+    public void computerHistory(Scanner inp) {
         System.out.print("Enter the id of PC you want to check history of: ");
         int pc_id = inp.nextInt();
         if (pc_id > 30) {
@@ -185,6 +206,9 @@ class CyberCafe {
         System.out.println("#############################");
     }
 
+    // This function searches all the session in each computer to check if the specified customer has used the computer or not
+    // It prints out session info all the occurences. It takes the customer name, converts it into lowercase and compares it against
+    // cust_name variable in each session object.
     void searchCustomer(Scanner inp) {
         System.out.print("Enter customer name: ");
         inp.nextLine();
@@ -215,6 +239,7 @@ class CyberCafe {
         }
     }
 
+    // prints out the help menu
     public void help() {
         System.out.println("1. Start a new session.");
         System.out.println("2. End a session.");
@@ -226,6 +251,7 @@ class CyberCafe {
         System.out.println("8. Exit");
     }
 
+    // Main function that runs the system. It make this system a menu driven proogra.
     public void run(Scanner inp) {
         help();
         makeComputerObjs();
