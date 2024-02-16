@@ -281,6 +281,7 @@ class CyberCafe {
                     break;
                 case 7:
                     help();
+                    break;
                 case 8:
                     inp.close();
                     System.exit(0);
@@ -292,6 +293,7 @@ class CyberCafe {
     }
 
 }
+
 
 public class cafeSystem {
     public static void main(String[] args) {
