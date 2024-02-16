@@ -10,7 +10,7 @@ class Session {
     long st, dur;
     String duration, cust_name;
 
-    DateTimeFormatter formatted_time = DateTimeFormatter.ofPattern("DD/MM/YY | hh:mm:ss a");
+    DateTimeFormatter formatted_time = DateTimeFormatter.ofPattern("dd/MM/YY | hh:mm:ss a");
 
     // this command will start a new session. It will note the start time and create a new seesion ID
     public void startSession() {
